@@ -59,8 +59,18 @@ BEGIN {
 }
 
 END {
-  printf "{GitBlameLineRef}%s {GitBlameLineSummary}%s\n", ref, summary
-  printf "{GitBlameLineAuthor}%s {GitBlameLineTime}on %s", author, time
+  first = sprintf("{GitBlameLineRef}%s {GitBlameLineSummary}%s", ref, summary)
+  second = sprintf("{GitBlameLineAuthor}%s {GitBlameLineTime}on %s", author, time)
+
+  max_len = length(first)
+  second_len = length(second)
+  if (second_len > max_len) {
+    max_len = second_len
+  }
+  fmt_string = sprintf("%%-%ds", max_len)
+
+  printf fmt_string "\n", first
+  printf fmt_string, second
 }'
   }
 }
