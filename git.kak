@@ -2,6 +2,7 @@ declare-option str git_branch_name
 declare-option str awk_cmd 'awk'
 
 declare-user-mode git
+map global git <ret> ':git blame-jump<ret>' -docstring 'open last commit that touched current line'
 map global git n ':git next-hunk<ret>' -docstring 'goto next hunk'
 map global git p ':git prev-hunk<ret>' -docstring 'goto previous hunk'
 
@@ -76,16 +77,3 @@ END {
 }
 
 map global git b ':git-blame-current-line<ret>' -docstring 'blame current line'
-
-## Show the commit that touched the line under the cursor.
-declare-option str git_show_current_line_commit
-define-command git-show-current-line %{
-  set-option global git_show_current_line_commit %sh{ git blame -L$kak_cursor_line,$kak_cursor_line $kak_bufname | cut -d' ' -f1 }
-  edit -scratch *git*
-  set-option buffer filetype git-commit
-  set-option buffer kts_lang git-commit
-  execute-keys '%|git show --pretty=fuller $kak_opt_git_show_current_line_commit<ret>gg'
-  set-option buffer readonly true
-}
-
-map global git <ret> ':git-show-current-line<ret>' -docstring 'open last commit that touched current line'
